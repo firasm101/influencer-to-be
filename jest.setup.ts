@@ -17,4 +17,4 @@ if (typeof React.act !== "function") {
 }
 
 // Tell React we're in a test environment
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+(globalThis as unknown as Record<string, boolean>).IS_REACT_ACT_ENVIRONMENT = true;
