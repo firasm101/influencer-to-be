@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   }
 
   const userId = (session.user as { id: string }).id;
-  const { handle, platform, displayName, followerCount, bio, avatarUrl } =
+  const { handle, platform, displayName, followerCount, bio, avatarUrl, cid } =
     await req.json();
 
   // Create or update tracked creator
@@ -54,11 +54,11 @@ export async function POST(req: Request) {
     },
   });
 
-  // Fetch posts for this creator
+  // Fetch posts for this creator (pass cid if available for faster lookup)
   const posts =
     platform === "instagram"
-      ? await fetchInstagramPosts(handle)
-      : await fetchTikTokPosts(handle);
+      ? await fetchInstagramPosts(handle, cid)
+      : await fetchTikTokPosts(handle, cid);
 
   // Calculate engagement rate based on follower count
   const enrichedPosts = posts.map((p) => ({

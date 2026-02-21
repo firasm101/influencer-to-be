@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Instagram, UserPlus, UserMinus, Users } from "lucide-react";
+import { Instagram, UserPlus, UserMinus, Users, TrendingUp, Star } from "lucide-react";
 
 interface CreatorCardProps {
   creator: {
@@ -14,6 +14,8 @@ interface CreatorCardProps {
     followerCount: number;
     bio?: string | null;
     avatarUrl?: string | null;
+    avgER?: number;
+    qualityScore?: number;
   };
   tracked?: boolean;
   onTrack?: () => void;
@@ -61,9 +63,23 @@ export function CreatorCard({
             )}
           </div>
           <p className="text-sm text-muted-foreground">@{creator.handle}</p>
-          <div className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-            <Users className="h-3 w-3" />
-            {formatFollowers(creator.followerCount)} followers
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              {formatFollowers(creator.followerCount)}
+            </span>
+            {creator.avgER != null && creator.avgER > 0 && (
+              <span className="flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                {(creator.avgER * 100).toFixed(2)}% ER
+              </span>
+            )}
+            {creator.qualityScore != null && creator.qualityScore > 0 && (
+              <span className="flex items-center gap-1">
+                <Star className="h-3 w-3" />
+                {(creator.qualityScore * 100).toFixed(0)}% Quality
+              </span>
+            )}
           </div>
           {creator.bio && (
             <p className="mt-2 text-xs text-muted-foreground line-clamp-2">

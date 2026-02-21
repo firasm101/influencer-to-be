@@ -20,6 +20,9 @@ export interface CreatorResult {
   followerCount: number;
   bio: string;
   avatarUrl: string;
+  cid?: string; // Instagram Statistics API creator ID (e.g., "INST:12345" or "TT:12345")
+  avgER?: number;
+  qualityScore?: number;
 }
 
 export interface PostResult {

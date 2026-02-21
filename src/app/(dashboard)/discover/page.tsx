@@ -14,6 +14,9 @@ interface Creator {
   followerCount: number;
   bio: string;
   avatarUrl: string;
+  cid?: string;
+  avgER?: number;
+  qualityScore?: number;
 }
 
 export default function DiscoverPage() {

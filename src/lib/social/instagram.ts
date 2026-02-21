@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { CreatorResult, PostResult } from "@/types";
 
-const RAPIDAPI_HOST = "instagram-scraper-api2.p.rapidapi.com";
+const RAPIDAPI_HOST = "instagram-statistics-api.p.rapidapi.com";
 
 function getHeaders() {
   return {
@@ -10,63 +10,160 @@ function getHeaders() {
   };
 }
 
+// Map niche names to API-compatible tag slugs
+function nicheToTag(niche: string): string {
+  const tagMap: Record<string, string> = {
+    "Fitness & Health": "fitness",
+    "Cooking & Food": "food-and-cooking",
+    "Tech Reviews": "technology-and-science",
+    "Fashion & Style": "fashion",
+    "Beauty & Skincare": "beauty",
+    "Travel": "travel",
+    "Personal Finance": "finance-and-economics",
+    "Gaming": "gaming",
+    "Photography": "photography",
+    "Lifestyle": "lifestyle",
+    "Education": "education",
+    "Comedy & Entertainment": "humor-and-fun-and-happiness",
+    "Music": "music",
+    "Art & Design": "art-and-artists",
+    "Parenting": "family",
+    "Pets & Animals": "animals",
+    "Sports": "sports-with-a-ball",
+    "DIY & Crafts": "diy-and-design",
+    "Business & Entrepreneurship": "business-and-careers",
+    "Motivation & Self-Help": "shows",
+  };
+  return tagMap[niche] || niche.toLowerCase().replace(/\s+&?\s*/g, "-");
+}
+
 export async function searchInstagramCreators(niche: string): Promise<CreatorResult[]> {
   try {
+    const tag = nicheToTag(niche);
     const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/v1/hashtag`,
+      `https://${RAPIDAPI_HOST}/search`,
       {
-        params: { hashtag: niche.toLowerCase().replace(/\s+/g, "") },
+        params: {
+          page: 1,
+          perPage: 20,
+          sort: "-avgER",
+          socialTypes: "INST",
+          tags: tag,
+          trackTotal: true,
+        },
         headers: getHeaders(),
       }
     );
 
-    const users = data?.data?.top?.users || data?.data?.users || [];
-    return users.slice(0, 20).map((user: Record<string, unknown>) => ({
-      handle: (user.username as string) || "",
-      displayName: (user.full_name as string) || (user.username as string) || "",
-      platform: "instagram" as const,
-      followerCount: (user.follower_count as number) || 0,
-      bio: (user.biography as string) || "",
-      avatarUrl: (user.profile_pic_url as string) || "",
-    }));
+    if (data?.meta?.code !== 200 || !data?.data?.length) {
+      console.warn("Instagram Statistics API returned no results, trying query search...");
+      // Fallback: try searching by query instead of tags
+      const { data: queryData } = await axios.get(
+        `https://${RAPIDAPI_HOST}/search`,
+        {
+          params: {
+            page: 1,
+            perPage: 20,
+            sort: "-avgER",
+            socialTypes: "INST",
+            q: niche,
+            trackTotal: true,
+          },
+          headers: getHeaders(),
+        }
+      );
+
+      if (queryData?.meta?.code !== 200 || !queryData?.data?.length) {
+        return getMockInstagramCreators(niche);
+      }
+
+      return mapCreatorResults(queryData.data, "instagram");
+    }
+
+    return mapCreatorResults(data.data, "instagram");
   } catch (error) {
     console.error("Instagram search error:", error);
     return getMockInstagramCreators(niche);
   }
 }
 
-export async function fetchInstagramPosts(handle: string): Promise<PostResult[]> {
+function mapCreatorResults(
+  creators: Record<string, unknown>[],
+  platform: "instagram" | "tiktok"
+): CreatorResult[] {
+  return creators.map((creator) => ({
+    handle: (creator.screenName as string) || "",
+    displayName: (creator.name as string) || (creator.screenName as string) || "",
+    platform,
+    followerCount: (creator.usersCount as number) || 0,
+    bio: "",
+    avatarUrl: (creator.image as string) || "",
+    cid: (creator.cid as string) || "",
+    avgER: (creator.avgER as number) || 0,
+    qualityScore: (creator.qualityScore as number) || 0,
+  }));
+}
+
+export async function fetchInstagramPosts(handle: string, cid?: string): Promise<PostResult[]> {
   try {
+    // If we don't have a cid, look it up via Profile by URL
+    let creatorCid = cid;
+    if (!creatorCid) {
+      const profileUrl = `https://instagram.com/${handle}`;
+      const { data: profileData } = await axios.get(
+        `https://${RAPIDAPI_HOST}/community`,
+        {
+          params: { url: profileUrl },
+          headers: getHeaders(),
+        }
+      );
+      creatorCid = profileData?.data?.cid || profileData?.cid;
+      if (!creatorCid) {
+        console.error("Could not resolve cid for handle:", handle);
+        return getMockInstagramPosts(handle);
+      }
+    }
+
+    // Fetch posts for the last 90 days
+    const now = new Date();
+    const from = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const formatDate = (d: Date) =>
+      `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+
     const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/v1.2/posts`,
+      `https://${RAPIDAPI_HOST}/posts`,
       {
-        params: { username_or_id_or_url: handle },
+        params: {
+          cid: creatorCid,
+          from: formatDate(from),
+          to: formatDate(now),
+          type: "posts",
+          sort: "date",
+        },
         headers: getHeaders(),
       }
     );
 
-    const items = data?.data?.items || [];
-    return items.slice(0, 12).map((item: Record<string, unknown>) => {
-      const likeCount = (item.like_count as number) || 0;
-      const commentCount = (item.comment_count as number) || 0;
-      const mediaType = item.media_type as number;
-      let postType = "static";
-      if (mediaType === 2) postType = "reel";
-      else if (mediaType === 8) postType = "carousel";
+    if (data?.meta?.code !== 200 || !data?.data?.posts?.length) {
+      return getMockInstagramPosts(handle);
+    }
 
+    const posts = data.data.posts as Record<string, unknown>[];
+    return posts.slice(0, 12).map((post) => {
+      const postType = mapPostType((post.type as string) || "");
       return {
-        externalId: (item.code as string) || (item.id as string) || "",
+        externalId: (post.socialPostID as string) || (post.postID as string) || "",
         platform: "instagram" as const,
         postType,
-        caption: ((item.caption as Record<string, unknown>)?.text as string) || "",
-        mediaUrl: ((item.image_versions2 as Record<string, unknown>)?.candidates as Record<string, unknown>[])?.[0]?.url as string || "",
-        thumbnailUrl: ((item.image_versions2 as Record<string, unknown>)?.candidates as Record<string, unknown>[])?.[0]?.url as string || "",
-        likes: likeCount,
-        comments: commentCount,
-        shares: 0,
-        views: (item.play_count as number) || 0,
-        postedAt: new Date((item.taken_at as number) * 1000).toISOString(),
-        engagementRate: 0,
+        caption: (post.text as string) || "",
+        mediaUrl: (post.postImage as string) || "",
+        thumbnailUrl: (post.postImage as string) || "",
+        likes: (post.likes as number) || 0,
+        comments: (post.comments as number) || 0,
+        shares: (post.rePosts as number) || 0,
+        views: (post.videoViews as number) || (post.views as number) || 0,
+        postedAt: (post.date as string) || new Date().toISOString(),
+        engagementRate: (post.er as number) ? (post.er as number) * 100 : 0,
       };
     });
   } catch (error) {
@@ -75,12 +172,20 @@ export async function fetchInstagramPosts(handle: string): Promise<PostResult[]>
   }
 }
 
+function mapPostType(apiType: string): "reel" | "carousel" | "static" | "video" | "story" {
+  const type = apiType.toLowerCase();
+  if (type.includes("reel") || type.includes("video")) return "reel";
+  if (type.includes("carousel") || type.includes("album")) return "carousel";
+  if (type.includes("story") || type.includes("stories")) return "story";
+  return "static";
+}
+
 function getMockInstagramCreators(niche: string): CreatorResult[] {
   const mockNames = [
     "fitness_guru", "healthy_habits", "workout_daily", "mindful_moves", "strength_lab",
     "clean_eats", "yoga_flow", "run_wild", "lift_heavy", "wellness_warrior",
   ];
-  return mockNames.slice(0, 10).map((name, i) => ({
+  return mockNames.slice(0, 10).map((name) => ({
     handle: `${name}_${niche.toLowerCase().replace(/\s+/g, "")}`.slice(0, 25),
     displayName: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
     platform: "instagram" as const,
