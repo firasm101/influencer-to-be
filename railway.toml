@@ -1,0 +1,5 @@
+[build]
+buildCommand = "npm test && npx prisma generate && npx prisma db push && npm run build"
+
+[deploy]
+startCommand = "npm start"
