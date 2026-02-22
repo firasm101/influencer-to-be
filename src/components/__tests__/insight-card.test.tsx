@@ -23,9 +23,7 @@ describe("InsightCard", () => {
     render(<InsightCard insight={baseInsight} />);
 
     expect(
-      screen.getByText(
-        "Carousel posts get 2.3x more engagement than static posts in your niche."
-      )
+      screen.getByText("Carousel posts get 2.3x more engagement than static posts in your niche.")
     ).toBeInTheDocument();
   });
 
@@ -38,9 +36,7 @@ describe("InsightCard", () => {
   it("should render data points count", () => {
     render(<InsightCard insight={baseInsight} />);
 
-    expect(
-      screen.getByText("Based on 15 data points")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Based on 15 data points")).toBeInTheDocument();
   });
 
   it("should show barchart icon for format insight type", () => {
@@ -50,64 +46,38 @@ describe("InsightCard", () => {
   });
 
   it("should show clock icon for timing insight type", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, insightType: "timing" }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, insightType: "timing" }} />);
 
     expect(screen.getByTestId("clock-icon")).toBeInTheDocument();
   });
 
   it("should show message icon for hook insight type", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, insightType: "hook" }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, insightType: "hook" }} />);
 
     expect(screen.getByTestId("message-icon")).toBeInTheDocument();
   });
 
   it("should show lightbulb icon for topic insight type", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, insightType: "topic" }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, insightType: "topic" }} />);
 
     expect(screen.getByTestId("lightbulb-icon")).toBeInTheDocument();
   });
 
   it("should show trending icon for engagement insight type", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, insightType: "engagement" }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, insightType: "engagement" }} />);
 
     expect(screen.getByTestId("trending-icon")).toBeInTheDocument();
   });
 
   it("should show lightbulb icon as fallback for unknown insight type", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, insightType: "unknown_type" }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, insightType: "unknown_type" }} />);
 
     expect(screen.getByTestId("lightbulb-icon")).toBeInTheDocument();
   });
 
   it("should show correct data points count for different values", () => {
-    render(
-      <InsightCard
-        insight={{ ...baseInsight, dataPoints: 42 }}
-      />
-    );
+    render(<InsightCard insight={{ ...baseInsight, dataPoints: 42 }} />);
 
-    expect(
-      screen.getByText("Based on 42 data points")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Based on 42 data points")).toBeInTheDocument();
   });
 });

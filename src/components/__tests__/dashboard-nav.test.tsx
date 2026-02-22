@@ -44,21 +44,13 @@ jest.mock("lucide-react", () => ({
 
 // Mock shadcn dropdown
 jest.mock("@/components/ui/dropdown-menu", () => ({
-  DropdownMenu: ({ children }: { children: React.ReactNode }) => (
+  DropdownMenu: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DropdownMenuTrigger: ({ children }: { children: React.ReactNode; asChild?: boolean }) => (
     <div>{children}</div>
   ),
-  DropdownMenuTrigger: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    asChild?: boolean;
-  }) => <div>{children}</div>,
-  DropdownMenuContent: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    align?: string;
-  }) => <div>{children}</div>,
+  DropdownMenuContent: ({ children }: { children: React.ReactNode; align?: string }) => (
+    <div>{children}</div>
+  ),
   DropdownMenuItem: ({
     children,
     onClick,
@@ -66,9 +58,7 @@ jest.mock("@/components/ui/dropdown-menu", () => ({
     children: React.ReactNode;
     onClick?: () => void;
     className?: string;
-  }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
+  }) => <button onClick={onClick}>{children}</button>,
 }));
 
 describe("DashboardNav", () => {

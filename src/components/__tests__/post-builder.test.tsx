@@ -29,13 +29,7 @@ jest.mock("@/components/ui/select", () => ({
       {children}
     </div>
   ),
-  SelectTrigger: ({
-    children,
-    id,
-  }: {
-    children: React.ReactNode;
-    id?: string;
-  }) => (
+  SelectTrigger: ({ children, id }: { children: React.ReactNode; id?: string }) => (
     <button data-testid={`select-trigger-${id || "default"}`}>{children}</button>
   ),
   SelectValue: ({ placeholder }: { placeholder?: string }) => (
@@ -44,13 +38,7 @@ jest.mock("@/components/ui/select", () => ({
   SelectContent: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="select-content">{children}</div>
   ),
-  SelectItem: ({
-    children,
-    value,
-  }: {
-    children: React.ReactNode;
-    value: string;
-  }) => (
+  SelectItem: ({ children, value }: { children: React.ReactNode; value: string }) => (
     <div data-testid={`select-item-${value}`}>{children}</div>
   ),
 }));
@@ -86,9 +74,7 @@ describe("PostBuilder", () => {
     render(<PostBuilder hasInsights={true} />);
 
     expect(screen.getByText("Topic / Angle")).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText("e.g. morning routine")
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("e.g. morning routine")).toBeInTheDocument();
   });
 
   it("should render Generate Post button", () => {
@@ -117,9 +103,7 @@ describe("PostBuilder", () => {
   it("should not show no-insights message when insights exist", () => {
     render(<PostBuilder hasInsights={true} />);
 
-    expect(
-      screen.queryByText(/You need to generate insights first/)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/You need to generate insights first/)).not.toBeInTheDocument();
   });
 
   it("should allow typing in the topic field", () => {

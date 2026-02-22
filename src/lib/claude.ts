@@ -5,7 +5,12 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export async function analyzePost(caption: string, postType: string, engagementRate: number, platform: string) {
+export async function analyzePost(
+  caption: string,
+  postType: string,
+  engagementRate: number,
+  platform: string
+) {
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 1024,
@@ -43,7 +48,13 @@ Return this exact JSON structure:
 
 export async function generateNicheInsights(
   niche: string,
-  postsData: { caption: string; postType: string; engagementRate: number; hookType?: string; platform: string }[]
+  postsData: {
+    caption: string;
+    postType: string;
+    engagementRate: number;
+    hookType?: string;
+    platform: string;
+  }[]
 ) {
   const summary = postsData
     .map(

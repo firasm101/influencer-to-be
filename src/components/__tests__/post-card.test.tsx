@@ -36,13 +36,9 @@ describe("PostCard", () => {
   });
 
   it("should not render caption when null", () => {
-    render(
-      <PostCard post={{ ...basePost, caption: null }} />
-    );
+    render(<PostCard post={{ ...basePost, caption: null }} />);
 
-    expect(
-      screen.queryByText(/fitness tips/)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/fitness tips/)).not.toBeInTheDocument();
   });
 
   it("should render engagement rate badge", () => {
@@ -76,9 +72,7 @@ describe("PostCard", () => {
   });
 
   it("should show views when greater than 0", () => {
-    render(
-      <PostCard post={{ ...basePost, views: 85000 }} />
-    );
+    render(<PostCard post={{ ...basePost, views: 85000 }} />);
 
     expect(screen.getByText("85.0K")).toBeInTheDocument();
     expect(screen.getByTestId("eye-icon")).toBeInTheDocument();
@@ -91,11 +85,7 @@ describe("PostCard", () => {
   });
 
   it("should format million counts with M suffix", () => {
-    render(
-      <PostCard
-        post={{ ...basePost, likes: 1500000, views: 5200000 }}
-      />
-    );
+    render(<PostCard post={{ ...basePost, likes: 1500000, views: 5200000 }} />);
 
     expect(screen.getByText("1.5M")).toBeInTheDocument();
     expect(screen.getByText("5.2M")).toBeInTheDocument();
@@ -108,27 +98,21 @@ describe("PostCard", () => {
   });
 
   it("should show TikTok icon for tiktok platform", () => {
-    render(
-      <PostCard post={{ ...basePost, platform: "tiktok" }} />
-    );
+    render(<PostCard post={{ ...basePost, platform: "tiktok" }} />);
 
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
     expect(screen.queryByTestId("linkedin-icon")).not.toBeInTheDocument();
   });
 
   it("should show LinkedIn icon for linkedin platform", () => {
-    render(
-      <PostCard post={{ ...basePost, platform: "linkedin" }} />
-    );
+    render(<PostCard post={{ ...basePost, platform: "linkedin" }} />);
 
     expect(screen.getByTestId("linkedin-icon")).toBeInTheDocument();
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
   });
 
   it("should render creator handle when provided", () => {
-    render(
-      <PostCard post={basePost} creatorHandle="fitness_pro" />
-    );
+    render(<PostCard post={basePost} creatorHandle="fitness_pro" />);
 
     expect(screen.getByText("@fitness_pro")).toBeInTheDocument();
   });
@@ -185,9 +169,7 @@ describe("PostCard", () => {
       render(<PostCard post={analysisPost} />);
 
       expect(
-        screen.getByText(
-          "The question hook drives engagement and curiosity."
-        )
+        screen.getByText("The question hook drives engagement and curiosity.")
       ).toBeInTheDocument();
     });
 
@@ -195,15 +177,9 @@ describe("PostCard", () => {
       render(<PostCard post={analysisPost} />);
 
       // Takeaways are rendered inside <li> elements with a bullet character
-      expect(
-        screen.getByText(/Use question hooks to engage/)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Keep tips actionable/)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Use carousel format for listicles/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Use question hooks to engage/)).toBeInTheDocument();
+      expect(screen.getByText(/Keep tips actionable/)).toBeInTheDocument();
+      expect(screen.getByText(/Use carousel format for listicles/)).toBeInTheDocument();
     });
 
     it("should format hook type with underscores replaced by spaces", () => {

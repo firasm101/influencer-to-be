@@ -20,7 +20,9 @@ jest.mock("next/server", () => ({
       this.url = url;
       this.body = init?.body ? JSON.parse(init.body) : {};
     }
-    json() { return Promise.resolve(this.body); }
+    json() {
+      return Promise.resolve(this.body);
+    }
   },
 }));
 
@@ -181,8 +183,12 @@ describe("API Routes", () => {
   // ============================================================
   describe("/api/creators", () => {
     let GET: () => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
-    let POST: (req: Request) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
-    let DELETE: (req: Request) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+    let POST: (
+      req: Request
+    ) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+    let DELETE: (
+      req: Request
+    ) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
 
     beforeAll(async () => {
       const mod = await import("@/app/api/creators/route");
@@ -311,9 +317,7 @@ describe("API Routes", () => {
 
       it("should return 400 when no id provided", async () => {
         mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
-        const response = await DELETE(
-          mockRequest({}, "http://localhost:3000/api/creators")
-        );
+        const response = await DELETE(mockRequest({}, "http://localhost:3000/api/creators"));
         const data = await response.json();
         expect(response.status).toBe(400);
         expect(data.error).toBe("Missing id");
@@ -341,7 +345,9 @@ describe("API Routes", () => {
   // ONBOARDING ROUTE
   // ============================================================
   describe("POST /api/onboarding", () => {
-    let handler: (req: Request) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+    let handler: (
+      req: Request
+    ) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
 
     beforeAll(async () => {
       const mod = await import("@/app/api/onboarding/route");
@@ -498,7 +504,9 @@ describe("API Routes", () => {
   // ============================================================
   describe("/api/generate-post", () => {
     let GET: () => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
-    let POST: (req: unknown) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+    let POST: (
+      req: unknown
+    ) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
 
     beforeAll(async () => {
       const mod = await import("@/app/api/generate-post/route");
@@ -556,19 +564,25 @@ describe("API Routes", () => {
 
       it("should return 400 when no insights available", async () => {
         mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
-        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+          niche: "Fitness & Health",
+        });
         (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([]);
 
         const response = await POST(mockRequest({ platform: "instagram" }));
         const data = await response.json();
 
         expect(response.status).toBe(400);
-        expect(data.error).toBe("No insights available. Generate insights first by analyzing posts.");
+        expect(data.error).toBe(
+          "No insights available. Generate insights first by analyzing posts."
+        );
       });
 
       it("should generate post and save to database", async () => {
         mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
-        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+          niche: "Fitness & Health",
+        });
         (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([
           { insightType: "format", insightText: "Carousels work best" },
           { insightType: "hook", insightText: "Questions get 2x engagement" },
@@ -584,7 +598,9 @@ describe("API Routes", () => {
           id: "gp-1",
         });
 
-        const response = await POST(mockRequest({ platform: "instagram", topic: "morning routine" }));
+        const response = await POST(
+          mockRequest({ platform: "instagram", topic: "morning routine" })
+        );
         const data = await response.json();
 
         expect(response.status).toBe(200);
@@ -604,7 +620,9 @@ describe("API Routes", () => {
 
       it("should return 500 when generation fails", async () => {
         mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
-        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+          niche: "Fitness & Health",
+        });
         (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([
           { insightType: "format", insightText: "test insight" },
         ]);

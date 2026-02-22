@@ -74,7 +74,15 @@ describe("TikTok Scraper", () => {
         data: {
           meta: { code: 200 },
           data: [
-            { cid: "TT:1", screenName: "gamer1", name: "Gamer One", image: "", usersCount: 10000, avgER: 0.05, qualityScore: 0.6 },
+            {
+              cid: "TT:1",
+              screenName: "gamer1",
+              name: "Gamer One",
+              image: "",
+              usersCount: 10000,
+              avgER: 0.05,
+              qualityScore: 0.6,
+            },
           ],
         },
       });
@@ -141,7 +149,17 @@ describe("TikTok Scraper", () => {
           meta: { code: 200 },
           data: {
             posts: [
-              { socialPostID: "p1", text: "Hey", likes: 10, comments: 1, rePosts: 0, videoViews: 100, date: "", type: "video", er: 0.01 },
+              {
+                socialPostID: "p1",
+                text: "Hey",
+                likes: 10,
+                comments: 1,
+                rePosts: 0,
+                videoViews: 100,
+                date: "",
+                type: "video",
+                er: 0.01,
+              },
             ],
           },
         },

@@ -7,13 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PostCard } from "@/components/post-card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Users,
-  FileText,
-  Sparkles,
-  RefreshCw,
-  ArrowRight,
-} from "lucide-react";
+import { Users, FileText, Sparkles, RefreshCw, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface PostAnalysis {
@@ -94,12 +88,8 @@ export default function DashboardPage() {
     }
   };
 
-  const allPosts = creators.flatMap((c) =>
-    c.posts.map((p) => ({ ...p, creatorHandle: c.handle }))
-  );
-  const sortedPosts = allPosts.sort(
-    (a, b) => b.engagementRate - a.engagementRate
-  );
+  const allPosts = creators.flatMap((c) => c.posts.map((p) => ({ ...p, creatorHandle: c.handle })));
+  const sortedPosts = allPosts.sort((a, b) => b.engagementRate - a.engagementRate);
   const analyzedCount = allPosts.filter((p) => p.analysis).length;
   const unanalyzedCount = allPosts.length - analyzedCount;
 
@@ -180,15 +170,9 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-4">
           <Sparkles className="h-5 w-5 text-primary" />
           <p className="flex-1 text-sm">
-            <strong>{unanalyzedCount} posts</strong> haven&apos;t been analyzed
-            yet.
+            <strong>{unanalyzedCount} posts</strong> haven&apos;t been analyzed yet.
           </p>
-          <Button
-            onClick={handleAnalyze}
-            disabled={analyzing}
-            size="sm"
-            className="gap-2"
-          >
+          <Button onClick={handleAnalyze} disabled={analyzing} size="sm" className="gap-2">
             {analyzing ? (
               <>
                 <RefreshCw className="h-4 w-4 animate-spin" /> Analyzing...
@@ -205,16 +189,10 @@ export default function DashboardPage() {
       {/* Feed */}
       {sortedPosts.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">
-            Top Performing Posts
-          </h2>
+          <h2 className="mb-4 text-xl font-semibold">Top Performing Posts</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {sortedPosts.slice(0, 10).map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                creatorHandle={post.creatorHandle}
-              />
+              <PostCard key={post.id} post={post} creatorHandle={post.creatorHandle} />
             ))}
           </div>
         </div>

@@ -74,8 +74,22 @@ describe("Analysis Orchestration", () => {
 
     it("should continue analyzing other posts when one fails", async () => {
       const mockPosts = [
-        { id: "p1", caption: "Post 1", postType: "reel", engagementRate: 3.0, platform: "instagram", creator: { userId: "u1" } },
-        { id: "p2", caption: "Post 2", postType: "static", engagementRate: 2.0, platform: "instagram", creator: { userId: "u1" } },
+        {
+          id: "p1",
+          caption: "Post 1",
+          postType: "reel",
+          engagementRate: 3.0,
+          platform: "instagram",
+          creator: { userId: "u1" },
+        },
+        {
+          id: "p2",
+          caption: "Post 2",
+          postType: "static",
+          engagementRate: 2.0,
+          platform: "instagram",
+          creator: { userId: "u1" },
+        },
       ];
 
       (mockPrisma.post.findMany as jest.Mock).mockResolvedValueOnce(mockPosts);
@@ -152,9 +166,7 @@ describe("Analysis Orchestration", () => {
         niche: null,
       });
 
-      await expect(generateInsightsForUser("user-1")).rejects.toThrow(
-        "User has no niche set"
-      );
+      await expect(generateInsightsForUser("user-1")).rejects.toThrow("User has no niche set");
     });
 
     it("should throw error when fewer than 3 analyzed posts", async () => {
@@ -164,7 +176,14 @@ describe("Analysis Orchestration", () => {
       });
 
       (mockPrisma.post.findMany as jest.Mock).mockResolvedValueOnce([
-        { id: "p1", caption: "Post", postType: "reel", engagementRate: 5, platform: "instagram", analysis: {} },
+        {
+          id: "p1",
+          caption: "Post",
+          postType: "reel",
+          engagementRate: 5,
+          platform: "instagram",
+          analysis: {},
+        },
       ]);
 
       await expect(generateInsightsForUser("user-1")).rejects.toThrow(

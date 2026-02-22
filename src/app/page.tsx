@@ -3,15 +3,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import {
-  BarChart3,
-  TrendingUp,
-  Users,
-  Zap,
-  ArrowRight,
-  Instagram,
-  Linkedin,
-} from "lucide-react";
+import { BarChart3, TrendingUp, Users, Zap, ArrowRight, Instagram, Linkedin } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LandingPage() {
@@ -50,9 +42,8 @@ export default function LandingPage() {
             <span className="text-primary">Grow Smarter.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            See what top creators in your niche are doing, understand WHY it
-            works, and use AI-powered insights to beat the algorithm with
-            intelligence — not guesswork.
+            See what top creators in your niche are doing, understand WHY it works, and use
+            AI-powered insights to beat the algorithm with intelligence — not guesswork.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link href={session ? "/dashboard" : "/login"}>
@@ -81,9 +72,7 @@ export default function LandingPage() {
       {/* Features */}
       <section className="border-t bg-muted/50 py-24">
         <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-bold">
-            Everything you need to grow
-          </h2>
+          <h2 className="mb-12 text-center text-3xl font-bold">Everything you need to grow</h2>
           <div className="grid gap-8 md:grid-cols-3">
             <FeatureCard
               icon={<Users className="h-8 w-8" />}
@@ -107,9 +96,7 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="py-24">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold">
-            Ready to stop guessing and start growing?
-          </h2>
+          <h2 className="text-3xl font-bold">Ready to stop guessing and start growing?</h2>
           <p className="mt-4 text-muted-foreground">
             Join thousands of aspiring creators using data to grow faster.
           </p>

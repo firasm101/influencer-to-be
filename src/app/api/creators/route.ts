@@ -34,8 +34,7 @@ export async function POST(req: Request) {
   }
 
   const userId = (session.user as { id: string }).id;
-  const { handle, platform, displayName, followerCount, bio, avatarUrl, cid } =
-    await req.json();
+  const { handle, platform, displayName, followerCount, bio, avatarUrl, cid } = await req.json();
 
   // Create or update tracked creator
   const creator = await prisma.trackedCreator.upsert({

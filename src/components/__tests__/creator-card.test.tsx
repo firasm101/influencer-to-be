@@ -30,11 +30,7 @@ describe("CreatorCard", () => {
   });
 
   it("should render handle when displayName is null", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, displayName: null }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, displayName: null }} />);
 
     // Should show handle as fallback for display name
     expect(screen.getByText("@fitness_pro")).toBeInTheDocument();
@@ -47,21 +43,13 @@ describe("CreatorCard", () => {
   });
 
   it("should format million follower counts with M suffix", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, followerCount: 2500000 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, followerCount: 2500000 }} />);
 
     expect(screen.getByText("2.5M")).toBeInTheDocument();
   });
 
   it("should show small follower counts as-is", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, followerCount: 500 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, followerCount: 500 }} />);
 
     expect(screen.getByText("500")).toBeInTheDocument();
   });
@@ -69,19 +57,13 @@ describe("CreatorCard", () => {
   it("should render bio text", () => {
     render(<CreatorCard creator={baseCreator} />);
 
-    expect(
-      screen.getByText("Fitness tips and workouts")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Fitness tips and workouts")).toBeInTheDocument();
   });
 
   it("should not render bio when null", () => {
-    render(
-      <CreatorCard creator={{ ...baseCreator, bio: null }} />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, bio: null }} />);
 
-    expect(
-      screen.queryByText("Fitness tips and workouts")
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Fitness tips and workouts")).not.toBeInTheDocument();
   });
 
   it("should show Instagram icon for instagram platform", () => {
@@ -91,22 +73,14 @@ describe("CreatorCard", () => {
   });
 
   it("should show TikTok SVG for tiktok platform", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, platform: "tiktok" }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, platform: "tiktok" }} />);
 
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
     expect(screen.queryByTestId("linkedin-icon")).not.toBeInTheDocument();
   });
 
   it("should show LinkedIn icon for linkedin platform", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, platform: "linkedin" }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, platform: "linkedin" }} />);
 
     expect(screen.getByTestId("linkedin-icon")).toBeInTheDocument();
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
@@ -114,13 +88,7 @@ describe("CreatorCard", () => {
 
   it("should show Track button when not tracked", () => {
     const onTrack = jest.fn();
-    render(
-      <CreatorCard
-        creator={baseCreator}
-        tracked={false}
-        onTrack={onTrack}
-      />
-    );
+    render(<CreatorCard creator={baseCreator} tracked={false} onTrack={onTrack} />);
 
     const trackBtn = screen.getByText("Track");
     expect(trackBtn).toBeInTheDocument();
@@ -130,13 +98,7 @@ describe("CreatorCard", () => {
 
   it("should show Untrack button when tracked", () => {
     const onUntrack = jest.fn();
-    render(
-      <CreatorCard
-        creator={baseCreator}
-        tracked={true}
-        onUntrack={onUntrack}
-      />
-    );
+    render(<CreatorCard creator={baseCreator} tracked={true} onUntrack={onUntrack} />);
 
     const untrackBtn = screen.getByText("Untrack");
     expect(untrackBtn).toBeInTheDocument();
@@ -146,12 +108,7 @@ describe("CreatorCard", () => {
 
   it("should disable buttons when loading", () => {
     render(
-      <CreatorCard
-        creator={baseCreator}
-        tracked={false}
-        onTrack={jest.fn()}
-        loading={true}
-      />
+      <CreatorCard creator={baseCreator} tracked={false} onTrack={jest.fn()} loading={true} />
     );
 
     const trackBtn = screen.getByText("Track").closest("button");
@@ -159,43 +116,27 @@ describe("CreatorCard", () => {
   });
 
   it("should show engagement rate when avgER is provided", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, avgER: 0.045 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, avgER: 0.045 }} />);
 
     expect(screen.getByText("4.50% ER")).toBeInTheDocument();
     expect(screen.getByTestId("trending-icon")).toBeInTheDocument();
   });
 
   it("should not show engagement rate when avgER is 0", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, avgER: 0 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, avgER: 0 }} />);
 
     expect(screen.queryByText(/% ER/)).not.toBeInTheDocument();
   });
 
   it("should show quality score when provided", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, qualityScore: 0.85 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, qualityScore: 0.85 }} />);
 
     expect(screen.getByText("85% Quality")).toBeInTheDocument();
     expect(screen.getByTestId("star-icon")).toBeInTheDocument();
   });
 
   it("should not show quality score when 0", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, qualityScore: 0 }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, qualityScore: 0 }} />);
 
     expect(screen.queryByText(/% Quality/)).not.toBeInTheDocument();
   });
@@ -209,11 +150,7 @@ describe("CreatorCard", () => {
   });
 
   it("should show first letter of handle as avatar fallback", () => {
-    render(
-      <CreatorCard
-        creator={{ ...baseCreator, avatarUrl: null }}
-      />
-    );
+    render(<CreatorCard creator={{ ...baseCreator, avatarUrl: null }} />);
 
     expect(screen.getByText("F")).toBeInTheDocument();
   });

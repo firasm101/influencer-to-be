@@ -64,15 +64,11 @@ export default function InsightsPage() {
         <div>
           <h1 className="text-3xl font-bold">Niche Insights</h1>
           <p className="mt-1 text-muted-foreground">
-            AI-powered insights for {niche || "your niche"} — backed by real
-            data from tracked creators.
+            AI-powered insights for {niche || "your niche"} — backed by real data from tracked
+            creators.
           </p>
         </div>
-        <Button
-          onClick={handleGenerate}
-          disabled={generating}
-          className="gap-2"
-        >
+        <Button onClick={handleGenerate} disabled={generating} className="gap-2">
           {generating ? (
             <>
               <RefreshCw className="h-4 w-4 animate-spin" /> Generating...
@@ -96,14 +92,10 @@ export default function InsightsPage() {
           <Lightbulb className="mx-auto h-12 w-12 text-muted-foreground" />
           <h2 className="mt-4 text-xl font-semibold">No insights yet</h2>
           <p className="mt-2 text-muted-foreground">
-            Track some creators, analyze their posts, then generate insights to
-            see what&apos;s working in your niche.
+            Track some creators, analyze their posts, then generate insights to see what&apos;s
+            working in your niche.
           </p>
-          <Button
-            className="mt-4 gap-2"
-            onClick={handleGenerate}
-            disabled={generating}
-          >
+          <Button className="mt-4 gap-2" onClick={handleGenerate} disabled={generating}>
             <Sparkles className="h-4 w-4" /> Generate Insights
           </Button>
         </div>

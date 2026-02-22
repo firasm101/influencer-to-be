@@ -6,13 +6,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, ArrowRight, ArrowLeft, Instagram, Linkedin, Check } from "lucide-react";
 import { NICHES } from "@/types";
@@ -30,9 +24,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
 
   const togglePlatform = (p: Platform) => {
-    setPlatforms((prev) =>
-      prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
-    );
+    setPlatforms((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
   };
 
   const handleSubmit = async () => {
@@ -79,9 +71,7 @@ export default function OnboardingPage() {
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
-                className={`h-2 w-16 rounded-full ${
-                  s <= step ? "bg-primary" : "bg-muted"
-                }`}
+                className={`h-2 w-16 rounded-full ${s <= step ? "bg-primary" : "bg-muted"}`}
               />
             ))}
           </div>
@@ -90,9 +80,7 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <Label className="text-base font-medium">
-                  What&apos;s your niche?
-                </Label>
+                <Label className="text-base font-medium">What&apos;s your niche?</Label>
                 <p className="mb-4 text-sm text-muted-foreground">
                   Pick the category that best describes your content.
                 </p>
@@ -144,9 +132,7 @@ export default function OnboardingPage() {
                 <Label className="text-base font-medium">
                   Which platforms do you want to analyze?
                 </Label>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  Select one or more platforms.
-                </p>
+                <p className="mb-4 text-sm text-muted-foreground">Select one or more platforms.</p>
                 <div className="grid grid-cols-3 gap-4">
                   <button
                     onClick={() => togglePlatform("instagram")}
@@ -167,11 +153,7 @@ export default function OnboardingPage() {
                         : "border-border hover:border-primary/50"
                     }`}
                   >
-                    <svg
-                      className="h-10 w-10"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
+                    <svg className="h-10 w-10" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.75a8.18 8.18 0 0 0 4.76 1.52V6.84a4.83 4.83 0 0 1-1-.15z" />
                     </svg>
                     <span className="font-medium">TikTok</span>
@@ -190,11 +172,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
               <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(1)}
-                  className="gap-2"
-                >
+                <Button variant="outline" onClick={() => setStep(1)} className="gap-2">
                   <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
                 <Button
@@ -211,12 +189,9 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <Label className="text-base font-medium">
-                  Your social media handle (optional)
-                </Label>
+                <Label className="text-base font-medium">Your social media handle (optional)</Label>
                 <p className="mb-4 text-sm text-muted-foreground">
-                  We&apos;ll use this to personalize your experience. You can
-                  skip this step.
+                  We&apos;ll use this to personalize your experience. You can skip this step.
                 </p>
                 <Input
                   placeholder="@yourusername"
@@ -227,9 +202,7 @@ export default function OnboardingPage() {
               <div className="rounded-lg border bg-muted/50 p-4">
                 <p className="text-sm font-medium">Your selections:</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <Badge variant="secondary">
-                    {niche === "Other" ? customNiche : niche}
-                  </Badge>
+                  <Badge variant="secondary">{niche === "Other" ? customNiche : niche}</Badge>
                   {platforms.map((p) => (
                     <Badge key={p} variant="secondary" className="capitalize">
                       {p}
@@ -238,18 +211,10 @@ export default function OnboardingPage() {
                 </div>
               </div>
               <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(2)}
-                  className="gap-2"
-                >
+                <Button variant="outline" onClick={() => setStep(2)} className="gap-2">
                   <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="gap-2"
-                >
+                <Button onClick={handleSubmit} disabled={loading} className="gap-2">
                   {loading ? "Setting up..." : "Start Analyzing"}
                   {!loading && <ArrowRight className="h-4 w-4" />}
                 </Button>

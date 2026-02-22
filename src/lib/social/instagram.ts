@@ -18,18 +18,18 @@ function nicheToTag(niche: string): string {
     "Tech Reviews": "technology-and-science",
     "Fashion & Style": "fashion",
     "Beauty & Skincare": "beauty",
-    "Travel": "travel",
+    Travel: "travel",
     "Personal Finance": "finance-and-economics",
-    "Gaming": "gaming",
-    "Photography": "photography",
-    "Lifestyle": "lifestyle",
-    "Education": "education",
+    Gaming: "gaming",
+    Photography: "photography",
+    Lifestyle: "lifestyle",
+    Education: "education",
     "Comedy & Entertainment": "humor-and-fun-and-happiness",
-    "Music": "music",
+    Music: "music",
     "Art & Design": "art-and-artists",
-    "Parenting": "family",
+    Parenting: "family",
     "Pets & Animals": "animals",
-    "Sports": "sports-with-a-ball",
+    Sports: "sports-with-a-ball",
     "DIY & Crafts": "diy-and-design",
     "Business & Entrepreneurship": "business-and-careers",
     "Motivation & Self-Help": "shows",
@@ -40,38 +40,32 @@ function nicheToTag(niche: string): string {
 export async function searchInstagramCreators(niche: string): Promise<CreatorResult[]> {
   try {
     const tag = nicheToTag(niche);
-    const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/search`,
-      {
+    const { data } = await axios.get(`https://${RAPIDAPI_HOST}/search`, {
+      params: {
+        page: 1,
+        perPage: 20,
+        sort: "-avgER",
+        socialTypes: "INST",
+        tags: tag,
+        trackTotal: true,
+      },
+      headers: getHeaders(),
+    });
+
+    if (data?.meta?.code !== 200 || !data?.data?.length) {
+      console.warn("Instagram Statistics API returned no results, trying query search...");
+      // Fallback: try searching by query instead of tags
+      const { data: queryData } = await axios.get(`https://${RAPIDAPI_HOST}/search`, {
         params: {
           page: 1,
           perPage: 20,
           sort: "-avgER",
           socialTypes: "INST",
-          tags: tag,
+          q: niche,
           trackTotal: true,
         },
         headers: getHeaders(),
-      }
-    );
-
-    if (data?.meta?.code !== 200 || !data?.data?.length) {
-      console.warn("Instagram Statistics API returned no results, trying query search...");
-      // Fallback: try searching by query instead of tags
-      const { data: queryData } = await axios.get(
-        `https://${RAPIDAPI_HOST}/search`,
-        {
-          params: {
-            page: 1,
-            perPage: 20,
-            sort: "-avgER",
-            socialTypes: "INST",
-            q: niche,
-            trackTotal: true,
-          },
-          headers: getHeaders(),
-        }
-      );
+      });
 
       if (queryData?.meta?.code !== 200 || !queryData?.data?.length) {
         return getMockInstagramCreators(niche);
@@ -110,13 +104,10 @@ export async function fetchInstagramPosts(handle: string, cid?: string): Promise
     let creatorCid = cid;
     if (!creatorCid) {
       const profileUrl = `https://instagram.com/${handle}`;
-      const { data: profileData } = await axios.get(
-        `https://${RAPIDAPI_HOST}/community`,
-        {
-          params: { url: profileUrl },
-          headers: getHeaders(),
-        }
-      );
+      const { data: profileData } = await axios.get(`https://${RAPIDAPI_HOST}/community`, {
+        params: { url: profileUrl },
+        headers: getHeaders(),
+      });
       creatorCid = profileData?.data?.cid || profileData?.cid;
       if (!creatorCid) {
         console.error("Could not resolve cid for handle:", handle);
@@ -130,19 +121,16 @@ export async function fetchInstagramPosts(handle: string, cid?: string): Promise
     const formatDate = (d: Date) =>
       `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
 
-    const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/posts`,
-      {
-        params: {
-          cid: creatorCid,
-          from: formatDate(from),
-          to: formatDate(now),
-          type: "posts",
-          sort: "date",
-        },
-        headers: getHeaders(),
-      }
-    );
+    const { data } = await axios.get(`https://${RAPIDAPI_HOST}/posts`, {
+      params: {
+        cid: creatorCid,
+        from: formatDate(from),
+        to: formatDate(now),
+        type: "posts",
+        sort: "date",
+      },
+      headers: getHeaders(),
+    });
 
     if (data?.meta?.code !== 200 || !data?.data?.posts?.length) {
       return getMockInstagramPosts(handle);
@@ -182,8 +170,16 @@ function mapPostType(apiType: string): "reel" | "carousel" | "static" | "video" 
 
 function getMockInstagramCreators(niche: string): CreatorResult[] {
   const mockNames = [
-    "fitness_guru", "healthy_habits", "workout_daily", "mindful_moves", "strength_lab",
-    "clean_eats", "yoga_flow", "run_wild", "lift_heavy", "wellness_warrior",
+    "fitness_guru",
+    "healthy_habits",
+    "workout_daily",
+    "mindful_moves",
+    "strength_lab",
+    "clean_eats",
+    "yoga_flow",
+    "run_wild",
+    "lift_heavy",
+    "wellness_warrior",
   ];
   return mockNames.slice(0, 10).map((name) => ({
     handle: `${name}_${niche.toLowerCase().replace(/\s+/g, "")}`.slice(0, 25),

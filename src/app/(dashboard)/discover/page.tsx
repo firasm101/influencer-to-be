@@ -39,8 +39,7 @@ export default function DiscoverPage() {
       setCreators(discoverData.creators || []);
       const tracked = new Set(
         (creatorsData.creators || []).map(
-          (c: { platform: string; handle: string }) =>
-            `${c.platform}:${c.handle}`
+          (c: { platform: string; handle: string }) => `${c.platform}:${c.handle}`
         )
       );
       setTrackedHandles(tracked as Set<string>);
@@ -97,19 +96,11 @@ export default function DiscoverPage() {
         <div>
           <h1 className="text-3xl font-bold">Discover Creators</h1>
           <p className="mt-1 text-muted-foreground">
-            Top creators in {niche || "your niche"} — track them to analyze
-            their content.
+            Top creators in {niche || "your niche"} — track them to analyze their content.
           </p>
         </div>
-        <Button
-          variant="outline"
-          onClick={fetchDiscovery}
-          disabled={loading}
-          className="gap-2"
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
-          />
+        <Button variant="outline" onClick={fetchDiscovery} disabled={loading} className="gap-2">
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </Button>
       </div>

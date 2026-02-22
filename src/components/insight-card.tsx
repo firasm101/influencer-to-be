@@ -2,13 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  TrendingUp,
-  Clock,
-  MessageSquare,
-  BarChart3,
-  Lightbulb,
-} from "lucide-react";
+import { TrendingUp, Clock, MessageSquare, BarChart3, Lightbulb } from "lucide-react";
 
 interface InsightCardProps {
   insight: {
@@ -40,9 +34,7 @@ export function InsightCard({ insight }: InsightCardProps) {
   return (
     <Card>
       <CardContent className="flex items-start gap-4 p-4">
-        <div
-          className={`mt-0.5 ${typeColors[insight.insightType] || "text-primary"}`}
-        >
+        <div className={`mt-0.5 ${typeColors[insight.insightType] || "text-primary"}`}>
           {typeIcons[insight.insightType] || <Lightbulb className="h-5 w-5" />}
         </div>
         <div className="flex-1">

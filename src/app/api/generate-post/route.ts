@@ -33,10 +33,7 @@ export async function POST(req: NextRequest) {
     const { platform, contentFormat, topic } = body;
 
     if (!platform) {
-      return NextResponse.json(
-        { error: "Platform is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Platform is required" }, { status: 400 });
     }
 
     // Get user niche
@@ -93,8 +90,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ post: { ...result, id: saved.id } });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to generate post";
+    const message = error instanceof Error ? error.message : "Failed to generate post";
     console.error("Generate post error:", error);
     return NextResponse.json({ error: message }, { status: 500 });
   }

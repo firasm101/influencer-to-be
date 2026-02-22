@@ -22,10 +22,8 @@ export const authOptions: NextAuthOptions = {
           where: { id: token.sub },
           select: { onboarded: true, niche: true },
         });
-        (session.user as { onboarded: boolean }).onboarded =
-          dbUser?.onboarded ?? false;
-        (session.user as { niche: string | null }).niche =
-          dbUser?.niche ?? null;
+        (session.user as { onboarded: boolean }).onboarded = dbUser?.onboarded ?? false;
+        (session.user as { niche: string | null }).niche = dbUser?.niche ?? null;
       }
       return session;
     },

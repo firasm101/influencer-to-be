@@ -75,14 +75,19 @@ describe("Claude AI Integration", () => {
         content: [{ type: "text", text: "This is not JSON at all" }],
       });
 
-      await expect(
-        analyzePost("Some caption", "static", 2.0, "instagram")
-      ).rejects.toThrow("Failed to parse analysis response");
+      await expect(analyzePost("Some caption", "static", 2.0, "instagram")).rejects.toThrow(
+        "Failed to parse analysis response"
+      );
     });
 
     it("should include platform and post type in prompt", async () => {
       mockCreate.mockResolvedValueOnce({
-        content: [{ type: "text", text: '{"hookType":"other","contentFormat":"","topic":"","whyItWorked":"","sentiment":"neutral","keyTakeaways":[]}' }],
+        content: [
+          {
+            type: "text",
+            text: '{"hookType":"other","contentFormat":"","topic":"","whyItWorked":"","sentiment":"neutral","keyTakeaways":[]}',
+          },
+        ],
       });
 
       await analyzePost("Test caption", "video", 3.0, "tiktok");
@@ -98,9 +103,21 @@ describe("Claude AI Integration", () => {
   describe("generateNicheInsights", () => {
     it("should generate insights from posts data", async () => {
       const mockInsights = [
-        { insightType: "format", insightText: "Carousel posts get 2.3x more engagement", dataPoints: 15 },
-        { insightType: "hook", insightText: "Question hooks outperform statements by 40%", dataPoints: 8 },
-        { insightType: "timing", insightText: "Posts between 8-10am get highest engagement", dataPoints: 20 },
+        {
+          insightType: "format",
+          insightText: "Carousel posts get 2.3x more engagement",
+          dataPoints: 15,
+        },
+        {
+          insightType: "hook",
+          insightText: "Question hooks outperform statements by 40%",
+          dataPoints: 8,
+        },
+        {
+          insightType: "timing",
+          insightText: "Posts between 8-10am get highest engagement",
+          dataPoints: 20,
+        },
       ];
 
       mockCreate.mockResolvedValueOnce({
@@ -108,9 +125,27 @@ describe("Claude AI Integration", () => {
       });
 
       const postsData = [
-        { caption: "Post 1", postType: "carousel", engagementRate: 5.0, hookType: "question", platform: "instagram" },
-        { caption: "Post 2", postType: "reel", engagementRate: 8.0, hookType: "bold_statement", platform: "instagram" },
-        { caption: "Post 3", postType: "static", engagementRate: 2.0, hookType: "story", platform: "instagram" },
+        {
+          caption: "Post 1",
+          postType: "carousel",
+          engagementRate: 5.0,
+          hookType: "question",
+          platform: "instagram",
+        },
+        {
+          caption: "Post 2",
+          postType: "reel",
+          engagementRate: 8.0,
+          hookType: "bold_statement",
+          platform: "instagram",
+        },
+        {
+          caption: "Post 3",
+          postType: "static",
+          engagementRate: 2.0,
+          hookType: "story",
+          platform: "instagram",
+        },
       ];
 
       const result = await generateNicheInsights("Fitness & Health", postsData);

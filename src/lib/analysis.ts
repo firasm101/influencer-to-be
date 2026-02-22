@@ -74,12 +74,14 @@ export async function generateInsightsForUser(userId: string) {
 
   // Save new insights
   const saved = await prisma.nicheInsight.createMany({
-    data: insights.map((insight: { insightType: string; insightText: string; dataPoints: number }) => ({
-      userId,
-      insightType: insight.insightType,
-      insightText: insight.insightText,
-      dataPoints: insight.dataPoints || 0,
-    })),
+    data: insights.map(
+      (insight: { insightType: string; insightText: string; dataPoints: number }) => ({
+        userId,
+        insightType: insight.insightType,
+        insightText: insight.insightText,
+        dataPoints: insight.dataPoints || 0,
+      })
+    ),
   });
 
   return saved;

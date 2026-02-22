@@ -19,18 +19,18 @@ function nicheToTag(niche: string): string {
     "Tech Reviews": "technology-and-science",
     "Fashion & Style": "fashion",
     "Beauty & Skincare": "beauty",
-    "Travel": "travel",
+    Travel: "travel",
     "Personal Finance": "finance-and-economics",
-    "Gaming": "gaming",
-    "Photography": "photography",
-    "Lifestyle": "lifestyle",
-    "Education": "education",
+    Gaming: "gaming",
+    Photography: "photography",
+    Lifestyle: "lifestyle",
+    Education: "education",
     "Comedy & Entertainment": "humor-and-fun-and-happiness",
-    "Music": "music",
+    Music: "music",
     "Art & Design": "art-and-artists",
-    "Parenting": "family",
+    Parenting: "family",
     "Pets & Animals": "animals",
-    "Sports": "sports-with-a-ball",
+    Sports: "sports-with-a-ball",
     "DIY & Crafts": "diy-and-design",
     "Business & Entrepreneurship": "business-and-careers",
     "Motivation & Self-Help": "shows",
@@ -41,37 +41,31 @@ function nicheToTag(niche: string): string {
 export async function searchTikTokCreators(niche: string): Promise<CreatorResult[]> {
   try {
     const tag = nicheToTag(niche);
-    const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/search`,
-      {
+    const { data } = await axios.get(`https://${RAPIDAPI_HOST}/search`, {
+      params: {
+        page: 1,
+        perPage: 20,
+        sort: "-avgER",
+        socialTypes: "TT",
+        tags: tag,
+        trackTotal: true,
+      },
+      headers: getHeaders(),
+    });
+
+    if (data?.meta?.code !== 200 || !data?.data?.length) {
+      console.warn("TikTok search via Statistics API returned no results, trying query search...");
+      const { data: queryData } = await axios.get(`https://${RAPIDAPI_HOST}/search`, {
         params: {
           page: 1,
           perPage: 20,
           sort: "-avgER",
           socialTypes: "TT",
-          tags: tag,
+          q: niche,
           trackTotal: true,
         },
         headers: getHeaders(),
-      }
-    );
-
-    if (data?.meta?.code !== 200 || !data?.data?.length) {
-      console.warn("TikTok search via Statistics API returned no results, trying query search...");
-      const { data: queryData } = await axios.get(
-        `https://${RAPIDAPI_HOST}/search`,
-        {
-          params: {
-            page: 1,
-            perPage: 20,
-            sort: "-avgER",
-            socialTypes: "TT",
-            q: niche,
-            trackTotal: true,
-          },
-          headers: getHeaders(),
-        }
-      );
+      });
 
       if (queryData?.meta?.code !== 200 || !queryData?.data?.length) {
         return getMockTikTokCreators(niche);
@@ -107,13 +101,10 @@ export async function fetchTikTokPosts(handle: string, cid?: string): Promise<Po
     let creatorCid = cid;
     if (!creatorCid) {
       const profileUrl = `https://www.tiktok.com/@${handle}`;
-      const { data: profileData } = await axios.get(
-        `https://${RAPIDAPI_HOST}/community`,
-        {
-          params: { url: profileUrl },
-          headers: getHeaders(),
-        }
-      );
+      const { data: profileData } = await axios.get(`https://${RAPIDAPI_HOST}/community`, {
+        params: { url: profileUrl },
+        headers: getHeaders(),
+      });
       creatorCid = profileData?.data?.cid || profileData?.cid;
       if (!creatorCid) {
         console.error("Could not resolve TikTok cid for handle:", handle);
@@ -127,19 +118,16 @@ export async function fetchTikTokPosts(handle: string, cid?: string): Promise<Po
     const formatDate = (d: Date) =>
       `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
 
-    const { data } = await axios.get(
-      `https://${RAPIDAPI_HOST}/posts`,
-      {
-        params: {
-          cid: creatorCid,
-          from: formatDate(from),
-          to: formatDate(now),
-          type: "posts",
-          sort: "date",
-        },
-        headers: getHeaders(),
-      }
-    );
+    const { data } = await axios.get(`https://${RAPIDAPI_HOST}/posts`, {
+      params: {
+        cid: creatorCid,
+        from: formatDate(from),
+        to: formatDate(now),
+        type: "posts",
+        sort: "date",
+      },
+      headers: getHeaders(),
+    });
 
     if (data?.meta?.code !== 200 || !data?.data?.posts?.length) {
       return getMockTikTokPosts(handle);
@@ -168,8 +156,16 @@ export async function fetchTikTokPosts(handle: string, cid?: string): Promise<Po
 
 function getMockTikTokCreators(niche: string): CreatorResult[] {
   const mockNames = [
-    "trending_tips", "viral_vibes", "content_king", "niche_master", "growth_hacker",
-    "daily_inspo", "creator_life", "trend_setter", "viral_coach", "social_spark",
+    "trending_tips",
+    "viral_vibes",
+    "content_king",
+    "niche_master",
+    "growth_hacker",
+    "daily_inspo",
+    "creator_life",
+    "trend_setter",
+    "viral_coach",
+    "social_spark",
   ];
   return mockNames.slice(0, 10).map((name) => ({
     handle: `${name}_${niche.toLowerCase().replace(/\s+/g, "")}`.slice(0, 25),

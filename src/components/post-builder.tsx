@@ -148,9 +148,7 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
             </div>
           </div>
 
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <Button
             onClick={handleGenerate}
@@ -172,7 +170,8 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
 
           {!hasInsights && (
             <p className="text-sm text-muted-foreground">
-              You need to generate insights first. Go to the Insights page to analyze posts in your niche.
+              You need to generate insights first. Go to the Insights page to analyze posts in your
+              niche.
             </p>
           )}
         </CardContent>
@@ -187,12 +186,7 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Caption</CardTitle>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1"
-                    onClick={handleCopy}
-                  >
+                  <Button variant="outline" size="sm" className="gap-1" onClick={handleCopy}>
                     {copied ? (
                       <>
                         <Check className="h-3.5 w-3.5" /> Copied!
@@ -224,11 +218,7 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
               />
               <div className="flex flex-wrap gap-1.5">
                 {result.hashtags.map((tag, i) => (
-                  <Badge
-                    key={i}
-                    variant="secondary"
-                    className="text-xs"
-                  >
+                  <Badge key={i} variant="secondary" className="text-xs">
                     #{tag}
                   </Badge>
                 ))}
@@ -258,9 +248,7 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
                   <Lightbulb className="mt-0.5 h-5 w-5 text-amber-600 dark:text-amber-400" />
                   <div>
                     <p className="text-sm font-medium">Format Tips</p>
-                    <p className="text-sm text-muted-foreground">
-                      {result.formatTips}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{result.formatTips}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -272,9 +260,7 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
                   <Clock className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-400" />
                   <div>
                     <p className="text-sm font-medium">Posting Tips</p>
-                    <p className="text-sm text-muted-foreground">
-                      {result.postingTips}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{result.postingTips}</p>
                   </div>
                 </CardContent>
               </Card>

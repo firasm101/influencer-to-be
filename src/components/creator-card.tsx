@@ -29,27 +29,17 @@ function formatFollowers(n: number): string {
   return n.toString();
 }
 
-export function CreatorCard({
-  creator,
-  tracked,
-  onTrack,
-  onUntrack,
-  loading,
-}: CreatorCardProps) {
+export function CreatorCard({ creator, tracked, onTrack, onUntrack, loading }: CreatorCardProps) {
   return (
     <Card>
       <CardContent className="flex items-start gap-4 p-4">
         <Avatar className="h-12 w-12">
           <AvatarImage src={creator.avatarUrl || ""} />
-          <AvatarFallback>
-            {creator.handle[0]?.toUpperCase() || "?"}
-          </AvatarFallback>
+          <AvatarFallback>{creator.handle[0]?.toUpperCase() || "?"}</AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-medium truncate">
-              {creator.displayName || creator.handle}
-            </span>
+            <span className="font-medium truncate">{creator.displayName || creator.handle}</span>
             {creator.platform === "instagram" ? (
               <Instagram className="h-3.5 w-3.5 text-muted-foreground" />
             ) : creator.platform === "linkedin" ? (
@@ -84,9 +74,7 @@ export function CreatorCard({
             )}
           </div>
           {creator.bio && (
-            <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
-              {creator.bio}
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{creator.bio}</p>
           )}
         </div>
         <div>
@@ -102,12 +90,7 @@ export function CreatorCard({
               <span className="hidden sm:inline">Untrack</span>
             </Button>
           ) : (
-            <Button
-              size="sm"
-              onClick={onTrack}
-              disabled={loading}
-              className="gap-1"
-            >
+            <Button size="sm" onClick={onTrack} disabled={loading} className="gap-1">
               <UserPlus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Track</span>
             </Button>
