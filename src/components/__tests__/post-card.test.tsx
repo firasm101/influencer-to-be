@@ -8,6 +8,7 @@ jest.mock("lucide-react", () => ({
   Share2: () => <span data-testid="share-icon" />,
   Eye: () => <span data-testid="eye-icon" />,
   Instagram: () => <span data-testid="instagram-icon" />,
+  Linkedin: () => <span data-testid="linkedin-icon" />,
   Sparkles: () => <span data-testid="sparkles-icon" />,
 }));
 
@@ -111,6 +112,16 @@ describe("PostCard", () => {
       <PostCard post={{ ...basePost, platform: "tiktok" }} />
     );
 
+    expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("linkedin-icon")).not.toBeInTheDocument();
+  });
+
+  it("should show LinkedIn icon for linkedin platform", () => {
+    render(
+      <PostCard post={{ ...basePost, platform: "linkedin" }} />
+    );
+
+    expect(screen.getByTestId("linkedin-icon")).toBeInTheDocument();
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
   });
 

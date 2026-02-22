@@ -4,6 +4,7 @@ import { CreatorCard } from "../creator-card";
 // Mock lucide-react icons
 jest.mock("lucide-react", () => ({
   Instagram: () => <span data-testid="instagram-icon" />,
+  Linkedin: () => <span data-testid="linkedin-icon" />,
   UserPlus: () => <span data-testid="user-plus-icon" />,
   UserMinus: () => <span data-testid="user-minus-icon" />,
   Users: () => <span data-testid="users-icon" />,
@@ -96,6 +97,18 @@ describe("CreatorCard", () => {
       />
     );
 
+    expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("linkedin-icon")).not.toBeInTheDocument();
+  });
+
+  it("should show LinkedIn icon for linkedin platform", () => {
+    render(
+      <CreatorCard
+        creator={{ ...baseCreator, platform: "linkedin" }}
+      />
+    );
+
+    expect(screen.getByTestId("linkedin-icon")).toBeInTheDocument();
     expect(screen.queryByTestId("instagram-icon")).not.toBeInTheDocument();
   });
 
