@@ -8,6 +8,7 @@ import {
   Share2,
   Eye,
   Instagram,
+  Linkedin,
   Sparkles,
 } from "lucide-react";
 
@@ -62,6 +63,8 @@ export function PostCard({ post, creatorHandle }: PostCardProps) {
           <div className="flex items-center gap-2">
             {post.platform === "instagram" ? (
               <Instagram className="h-4 w-4" />
+            ) : post.platform === "linkedin" ? (
+              <Linkedin className="h-4 w-4" />
             ) : (
               <svg
                 className="h-4 w-4"

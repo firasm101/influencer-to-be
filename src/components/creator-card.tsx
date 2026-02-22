@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Instagram, UserPlus, UserMinus, Users, TrendingUp, Star } from "lucide-react";
+import { Instagram, Linkedin, UserPlus, UserMinus, Users, TrendingUp, Star } from "lucide-react";
 
 interface CreatorCardProps {
   creator: {
@@ -52,6 +52,8 @@ export function CreatorCard({
             </span>
             {creator.platform === "instagram" ? (
               <Instagram className="h-3.5 w-3.5 text-muted-foreground" />
+            ) : creator.platform === "linkedin" ? (
+              <Linkedin className="h-3.5 w-3.5 text-muted-foreground" />
             ) : (
               <svg
                 className="h-3.5 w-3.5 text-muted-foreground"

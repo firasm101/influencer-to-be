@@ -125,7 +125,7 @@ export default function SettingsPage() {
           <div>
             <Label className="text-sm font-medium">Platforms</Label>
             <div className="mt-2 flex gap-3">
-              {["instagram", "tiktok"].map((p) => (
+              {["instagram", "tiktok", "linkedin"].map((p) => (
                 <Button
                   key={p}
                   variant={platforms.includes(p) ? "default" : "outline"}

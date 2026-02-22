@@ -20,6 +20,7 @@ import {
   Check,
   RefreshCw,
   Instagram,
+  Linkedin,
   Lightbulb,
   FileText,
   Clock,
@@ -110,6 +111,11 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
                       TikTok
                     </span>
                   </SelectItem>
+                  <SelectItem value="linkedin">
+                    <span className="flex items-center gap-2">
+                      <Linkedin className="h-4 w-4" /> LinkedIn
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -125,6 +131,8 @@ export function PostBuilder({ hasInsights }: PostBuilderProps) {
                   <SelectItem value="carousel">Carousel</SelectItem>
                   <SelectItem value="static">Static Image</SelectItem>
                   <SelectItem value="story">Story</SelectItem>
+                  <SelectItem value="article">Article / Long Post</SelectItem>
+                  <SelectItem value="document">Document / PDF</SelectItem>
                 </SelectContent>
               </Select>
             </div>

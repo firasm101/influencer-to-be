@@ -14,10 +14,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Zap, ArrowRight, ArrowLeft, Instagram, Check } from "lucide-react";
+import { Zap, ArrowRight, ArrowLeft, Instagram, Linkedin, Check } from "lucide-react";
 import { NICHES } from "@/types";
 
-type Platform = "instagram" | "tiktok";
+type Platform = "instagram" | "tiktok" | "linkedin";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -145,9 +145,9 @@ export default function OnboardingPage() {
                   Which platforms do you want to analyze?
                 </Label>
                 <p className="mb-4 text-sm text-muted-foreground">
-                  Select one or both platforms.
+                  Select one or more platforms.
                 </p>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <button
                     onClick={() => togglePlatform("instagram")}
                     className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-colors ${
@@ -175,6 +175,17 @@ export default function OnboardingPage() {
                       <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.75a8.18 8.18 0 0 0 4.76 1.52V6.84a4.83 4.83 0 0 1-1-.15z" />
                     </svg>
                     <span className="font-medium">TikTok</span>
+                  </button>
+                  <button
+                    onClick={() => togglePlatform("linkedin")}
+                    className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-colors ${
+                      platforms.includes("linkedin")
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Linkedin className="h-10 w-10" />
+                    <span className="font-medium">LinkedIn</span>
                   </button>
                 </div>
               </div>

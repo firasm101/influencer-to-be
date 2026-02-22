@@ -1,6 +1,6 @@
-export type Platform = "instagram" | "tiktok";
+export type Platform = "instagram" | "tiktok" | "linkedin";
 
-export type PostType = "reel" | "carousel" | "static" | "story" | "video";
+export type PostType = "reel" | "carousel" | "static" | "story" | "video" | "article" | "document";
 
 export type HookType =
   | "question"
