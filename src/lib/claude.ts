@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { GeneratedPostData } from "@/types";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -81,5 +82,58 @@ Generate 5-8 insights. Be specific with numbers and percentages. JSON array only
     const jsonMatch = text.match(/\[[\s\S]*\]/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
     throw new Error("Failed to parse insights response");
+  }
+}
+
+export async function generatePost(
+  niche: string,
+  platform: string,
+  insights: { insightType: string; insightText: string }[],
+  preferences?: { contentFormat?: string; topic?: string }
+): Promise<GeneratedPostData> {
+  const insightsSummary = insights
+    .map((ins, i) => `${i + 1}. [${ins.insightType}] ${ins.insightText}`)
+    .join("\n");
+
+  const formatHint = preferences?.contentFormat
+    ? `\nPreferred content format: ${preferences.contentFormat}`
+    : "";
+  const topicHint = preferences?.topic
+    ? `\nTopic/angle the user wants to cover: ${preferences.topic}`
+    : "";
+
+  const message = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 2048,
+    messages: [
+      {
+        role: "user",
+        content: `You are an expert social media content creator. Generate a high-performing ${platform} post for the "${niche}" niche.
+
+Use these data-driven insights about what works in this niche:
+${insightsSummary}
+${formatHint}${topicHint}
+
+Return JSON only, no markdown. Use this exact structure:
+{
+  "caption": "The full post caption including a strong hook in the first line. Use line breaks for readability. Include a call-to-action at the end.",
+  "hashtags": ["hashtag1", "hashtag2", "...up to 15 relevant hashtags without the # symbol"],
+  "formatTips": "Specific tips for how to format/present this post visually (e.g., carousel slide breakdown, reel structure, image composition)",
+  "postingTips": "Best practices for posting this content (timing, engagement strategy, stories cross-promotion)",
+  "suggestedFormat": "reel|carousel|static|story|video"
+}
+
+Make the caption authentic, engaging, and optimized for the ${platform} algorithm. The hook should stop the scroll.`,
+      },
+    ],
+  });
+
+  const text = message.content[0].type === "text" ? message.content[0].text : "";
+  try {
+    return JSON.parse(text);
+  } catch {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    throw new Error("Failed to parse generated post response");
   }
 }

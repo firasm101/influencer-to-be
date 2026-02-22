@@ -55,6 +55,14 @@ export interface NicheInsightData {
   dataPoints: number;
 }
 
+export interface GeneratedPostData {
+  caption: string;
+  hashtags: string[];
+  formatTips: string;
+  postingTips: string;
+  suggestedFormat: string;
+}
+
 export const NICHES = [
   "Fitness & Health",
   "Cooking & Food",

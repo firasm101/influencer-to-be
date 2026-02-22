@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Instagram,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LandingPage() {
   const { data: session } = useSession();
@@ -24,7 +25,8 @@ export default function LandingPage() {
             <Zap className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">InfluencerToBe</span>
           </div>
-          <div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             {session ? (
               <Link href="/dashboard">
                 <Button>Dashboard</Button>

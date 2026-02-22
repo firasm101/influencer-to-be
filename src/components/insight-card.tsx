@@ -29,11 +29,11 @@ const typeIcons: Record<string, React.ReactNode> = {
 };
 
 const typeColors: Record<string, string> = {
-  format: "text-blue-600",
-  timing: "text-amber-600",
-  hook: "text-purple-600",
-  topic: "text-green-600",
-  engagement: "text-red-600",
+  format: "text-blue-600 dark:text-blue-400",
+  timing: "text-amber-600 dark:text-amber-400",
+  hook: "text-purple-600 dark:text-purple-400",
+  topic: "text-green-600 dark:text-green-400",
+  engagement: "text-red-600 dark:text-red-400",
 };
 
 export function InsightCard({ insight }: InsightCardProps) {

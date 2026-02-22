@@ -59,6 +59,7 @@ model User {
   sessions        Session[]
   trackedCreators TrackedCreator[]
   nicheInsights   NicheInsight[]
+  generatedPosts  GeneratedPost[]
 }
 
 model TrackedCreator {
@@ -123,6 +124,21 @@ model NicheInsight {
   insightText String   @db.Text
   dataPoints  Int      @default(0)
   generatedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GeneratedPost {
+  id            String   @id @default(cuid())
+  userId        String
+  platform      String
+  contentFormat String?
+  caption       String   @db.Text
+  hashtags      String[] @default([])
+  formatTips    String?  @db.Text
+  postingTips   String?  @db.Text
+  topic         String?
+  generatedAt   DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -44,14 +44,14 @@ function formatNumber(n: number): string {
 }
 
 const hookColors: Record<string, string> = {
-  question: "bg-blue-100 text-blue-800",
-  bold_statement: "bg-red-100 text-red-800",
-  story: "bg-purple-100 text-purple-800",
-  statistic: "bg-green-100 text-green-800",
-  controversial: "bg-orange-100 text-orange-800",
-  how_to: "bg-teal-100 text-teal-800",
-  listicle: "bg-indigo-100 text-indigo-800",
-  behind_the_scenes: "bg-pink-100 text-pink-800",
+  question: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  bold_statement: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+  story: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+  statistic: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+  controversial: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
+  how_to: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
+  listicle: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+  behind_the_scenes: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300",
 };
 
 export function PostCard({ post, creatorHandle }: PostCardProps) {
@@ -121,7 +121,7 @@ export function PostCard({ post, creatorHandle }: PostCardProps) {
             <div className="flex flex-wrap gap-1.5">
               {post.analysis.hookType && (
                 <Badge
-                  className={`text-xs ${hookColors[post.analysis.hookType] || "bg-gray-100 text-gray-800"}`}
+                  className={`text-xs ${hookColors[post.analysis.hookType] || "bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-300"}`}
                 >
                   {post.analysis.hookType.replace(/_/g, " ")}
                 </Badge>

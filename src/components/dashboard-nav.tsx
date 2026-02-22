@@ -16,14 +16,17 @@ import {
   LayoutDashboard,
   Search,
   Lightbulb,
+  Wand2,
   Settings,
   LogOut,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/discover", label: "Discover", icon: Search },
   { href: "/insights", label: "Insights", icon: Lightbulb },
+  { href: "/build", label: "Build", icon: Wand2 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -54,27 +57,30 @@ export function DashboardNav() {
             ))}
           </nav>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={session?.user?.image || ""} />
-                <AvatarFallback>
-                  {session?.user?.name?.[0]?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem className="font-medium">
-              {session?.user?.name || "User"}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={session?.user?.image || ""} />
+                  <AvatarFallback>
+                    {session?.user?.name?.[0]?.toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="font-medium">
+                {session?.user?.name || "User"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       {/* Mobile nav */}
       <div className="flex items-center justify-around border-t md:hidden">

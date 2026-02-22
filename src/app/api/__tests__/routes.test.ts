@@ -4,7 +4,7 @@
  * for all API endpoints.
  */
 
-// Mock NextResponse before any route imports
+// Mock NextResponse and NextRequest before any route imports
 jest.mock("next/server", () => ({
   NextResponse: {
     json: (body: unknown, init?: { status?: number }) => ({
@@ -12,6 +12,15 @@ jest.mock("next/server", () => ({
       json: () => Promise.resolve(body),
       headers: new Map(),
     }),
+  },
+  NextRequest: class {
+    body: unknown;
+    url: string;
+    constructor(url: string, init?: { method?: string; body?: string }) {
+      this.url = url;
+      this.body = init?.body ? JSON.parse(init.body) : {};
+    }
+    json() { return Promise.resolve(this.body); }
   },
 }));
 
@@ -35,6 +44,7 @@ jest.mock("@/lib/db", () => ({
     },
     post: { upsert: jest.fn() },
     nicheInsight: { findMany: jest.fn() },
+    generatedPost: { findMany: jest.fn(), create: jest.fn() },
   },
 }));
 
@@ -53,6 +63,10 @@ jest.mock("@/lib/analysis", () => ({
   generateInsightsForUser: jest.fn(),
 }));
 
+jest.mock("@/lib/claude", () => ({
+  generatePost: jest.fn(),
+}));
+
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/db";
 import { searchInstagramCreators } from "@/lib/social/instagram";
@@ -60,6 +74,7 @@ import { searchTikTokCreators } from "@/lib/social/tiktok";
 import { fetchInstagramPosts } from "@/lib/social/instagram";
 import { analyzeUnanalyzedPosts } from "@/lib/analysis";
 import { generateInsightsForUser } from "@/lib/analysis";
+import { generatePost } from "@/lib/claude";
 
 const mockGetSession = getServerSession as jest.Mock;
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
@@ -474,6 +489,132 @@ describe("API Routes", () => {
 
         expect(response.status).toBe(500);
         expect(data.error).toBe("Need at least 3 analyzed posts to generate insights");
+      });
+    });
+  });
+
+  // ============================================================
+  // GENERATE-POST ROUTE
+  // ============================================================
+  describe("/api/generate-post", () => {
+    let GET: () => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+    let POST: (req: unknown) => Promise<{ status: number; json: () => Promise<Record<string, unknown>> }>;
+
+    beforeAll(async () => {
+      const mod = await import("@/app/api/generate-post/route");
+      GET = mod.GET as typeof GET;
+      POST = mod.POST as typeof POST;
+    });
+
+    describe("GET", () => {
+      it("should return 401 when not authenticated", async () => {
+        mockGetSession.mockResolvedValueOnce(null);
+        const response = await GET();
+        expect(response.status).toBe(401);
+      });
+
+      it("should return generated posts", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        (mockPrisma.generatedPost.findMany as jest.Mock).mockResolvedValueOnce([
+          { id: "gp1", caption: "Test post", hashtags: ["test"] },
+        ]);
+
+        const response = await GET();
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect((data.posts as unknown[]).length).toBe(1);
+      });
+    });
+
+    describe("POST", () => {
+      it("should return 401 when not authenticated", async () => {
+        mockGetSession.mockResolvedValueOnce(null);
+        const response = await POST(mockRequest({ platform: "instagram" }));
+        expect(response.status).toBe(401);
+      });
+
+      it("should return 400 when platform is missing", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        const response = await POST(mockRequest({}));
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.error).toBe("Platform is required");
+      });
+
+      it("should return 400 when user has no niche", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: null });
+
+        const response = await POST(mockRequest({ platform: "instagram" }));
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.error).toBe("Please set your niche in Settings first");
+      });
+
+      it("should return 400 when no insights available", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([]);
+
+        const response = await POST(mockRequest({ platform: "instagram" }));
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.error).toBe("No insights available. Generate insights first by analyzing posts.");
+      });
+
+      it("should generate post and save to database", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([
+          { insightType: "format", insightText: "Carousels work best" },
+          { insightType: "hook", insightText: "Questions get 2x engagement" },
+        ]);
+        (generatePost as jest.Mock).mockResolvedValueOnce({
+          caption: "Test caption with hook",
+          hashtags: ["fitness", "health"],
+          formatTips: "Use carousel slides",
+          postingTips: "Post at 9am",
+          suggestedFormat: "carousel",
+        });
+        (mockPrisma.generatedPost.create as jest.Mock).mockResolvedValueOnce({
+          id: "gp-1",
+        });
+
+        const response = await POST(mockRequest({ platform: "instagram", topic: "morning routine" }));
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect((data.post as { caption: string }).caption).toBe("Test caption with hook");
+        expect((data.post as { id: string }).id).toBe("gp-1");
+        expect(generatePost).toHaveBeenCalledWith(
+          "Fitness & Health",
+          "instagram",
+          [
+            { insightType: "format", insightText: "Carousels work best" },
+            { insightType: "hook", insightText: "Questions get 2x engagement" },
+          ],
+          { contentFormat: undefined, topic: "morning routine" }
+        );
+        expect(mockPrisma.generatedPost.create).toHaveBeenCalled();
+      });
+
+      it("should return 500 when generation fails", async () => {
+        mockGetSession.mockResolvedValueOnce({ user: { id: "user-1" } });
+        (mockPrisma.user.findUnique as jest.Mock).mockResolvedValueOnce({ niche: "Fitness & Health" });
+        (mockPrisma.nicheInsight.findMany as jest.Mock).mockResolvedValueOnce([
+          { insightType: "format", insightText: "test insight" },
+        ]);
+        (generatePost as jest.Mock).mockRejectedValueOnce(new Error("Claude API error"));
+
+        const response = await POST(mockRequest({ platform: "instagram" }));
+        const data = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(data.error).toBe("Claude API error");
       });
     });
   });
